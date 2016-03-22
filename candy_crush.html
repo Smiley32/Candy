@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Candy Crush</title>
+    <script>
+    
+    var rectangle = { x: 0, y: 0, hauteur: 0, largeur: 0, couleur: "" };
+
+    var obstacle = [];
+                
+    // clic sur la zone de jeu (coordonnées relatives au canvas)
+    var clic = { x: 0, y: 0 };
+
+    var touche = { gauche : false, droite: false, haut: false, bas: false };
+
+    rand = function(mini, maxi) {
+        return (Math.random()*(maxi-mini+1))+mini;
+    }
+        
+    // initialisation (appelée au chargement du corps du document <body onload="init">)    
+    init = function() {
+        context = document.getElementById("cvs").getContext("2d");
+        context.width = document.getElementById("cvs").width;
+        context.height = document.getElementById("cvs").height;
+
+        document.addEventListener("keydown", captureAppuiToucheClavier)
+        document.addEventListener("keyup", captureRelacheToucheClavier)
+        document.addEventListener("click", captureClicSouris)
+        
+        boucleDeJeu();
+    }
+    
+    
+    boucleDeJeu = function() {
+        update(Date.now());    
+        render();
+        requestAnimationFrame(boucleDeJeu);
+    }
+    
+    
+    /**
+     *  Mise à jour de l'état du jeu
+     *  @param  d   date courante
+     */
+    update = function(d) {
+        
+    }
+    
+    
+    /**
+     *  Fonction réalisant le rendu de l'état du jeu
+     */
+    render = function() {
+        // effacement de l'écran
+        context.clearRect(0, 0, context.width, context.height);
+
+        context.fillStyle="blue";
+
+        
+    }
+    
+    
+    /**
+     *  Fonction appelée lorsqu'une touche du clavier est appuyée
+     *  Associée à l'événement "keyDown"
+     */
+    captureAppuiToucheClavier = function(event) {
+        // pratique pour connaître les keyCode des touches du clavier :
+        //  --> http://www.cambiaresearch.com/articles/15/javascript-key-codes
+
+        console.log(event.keyCode);
+        switch(event.keyCode)
+        {
+            case 38:
+            case 90:
+                touche.haut = true;
+                break;
+            case 37:
+            case 81:
+                touche.gauche = true;
+                break;
+            case 39:
+            case 68:
+                touche.droite = true;
+                break;
+            case 40:
+            case 83:
+                touche.bas = true;
+                break;
+        }
+    }
+    
+    /**
+     *  Fonction appelée lorsqu'une touche du clavier est relâchée
+     *  Associée à l'événement "keyUp"
+     */
+    captureRelacheToucheClavier = function(event) {
+        switch(event.keyCode)
+        {
+            case 38:
+            case 90:
+                touche.haut = false;
+                break;
+            case 37:
+            case 81:
+                touche.gauche = false;
+                break;
+            case 39:
+            case 68:
+                touche.droite = false;
+                break;
+            case 40:
+            case 83:
+                touche.bas = false;
+                break;
+        }
+    }
+    
+    /**
+     *  Fonction appelée lorsqu'une touche du clavier est relâchée
+     *  Associée à l'événement "click"
+     */
+    captureClicSouris = function(event) {
+        // calcul des coordonnées de la souris dans le canvas
+        if (event.target.id == "cvs") {
+            clic.x = event.pageX - event.target.offsetLeft;
+            clic.y = event.pageY - event.target.offsetTop;
+        }
+    }  
+    </script>
+</head>
+
+<body onload="init()">
+
+    <canvas id="cvs" width="800" height="600" style="margin: 10px auto; border: solid 1px #000;"></canvas>
+
+</body>
+
+</html>
