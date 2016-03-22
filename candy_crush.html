@@ -46,7 +46,16 @@
 
     affichageGrille = function()
     {
-        context.drawLine(20, 20, 50, 50);
+        // Lignes verticales
+        for(i = 0; i <= tailleX; i++)
+        {
+            context.fillRect(tailleCase*(i+1), tailleCase, 1, tailleY * tailleCase);
+        }
+        // Lignes horizontales
+        for(j = 0; j <= tailleY; j++)
+        {
+            context.fillRect(tailleCase, tailleCase*(j+1), tailleX * tailleCase, 1);
+        }
     }
 
     rand = function(mini, maxi) {
