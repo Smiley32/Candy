@@ -6,6 +6,15 @@
     <title>Candy Crush</title>
     <script>
     
+    var niveau = { x: 250,         // X position       
+               y: 113,         // Y position        
+               tailleX: 8,     // Number of tile columns       
+               tailleY: 8,     // Number of tile rows      
+               tailleCase: 40,  // Visual width of a tile       
+              // tailleCaseY: 40,  Visual height of a tile        
+               grille: [],     // The two-dimensional tile array        
+               caseADeplacer: { column: 0, row: 0 } };
+
     var rectangle = { x: 0, y: 0, hauteur: 0, largeur: 0, couleur: "" };
 
     var obstacle = [];
@@ -56,6 +65,36 @@
         {
             context.fillRect(tailleCase, tailleCase*(j+1), tailleX * tailleCase, 1);
         }
+    }
+
+    getMouseTile = function(pos) {
+        // on calcule coordonnées de la tuile
+        var tx = Math.floor((pos.x - niveau.x) / niveau.tailleCaseX);
+        var ty = Math.floor((pos.y - niveau.y) / niveau.tailleCaseY);
+        
+        // on vérifie si la tuile est valide
+        if (tx >= 0 && tx < niveau.tailleX && ty >= 0 && ty < niveau.tailleY) {
+            // La tuile est valide
+            return { x: tx, y: ty };        
+        }
+        else { //tuile non valide
+            return{ x: -1, y: -1 };
+        }
+    }
+    
+    canSwap = function(x1, y1, x2, y2) {
+        //on vérifie si la tuile est sur une case adjacente (à côté) de la tuile selectionnée
+        if ((Math.abs(x1 - x2) == 1 && y1 == y2) || (Math.abs(y1 - y2) == 1 && x1 == x2)) {
+        return true;
+        }
+        else
+              return false;
+        }
+        
+        swap = function(x1, y1, x2, y2) {
+        var temp = niveau.grille[x1][y1];
+        niveau.grille[x1][y1] = niveau.grille[x2][y2];
+        niveau.grille[x2][y2] = temp;
     }
 
     rand = function(mini, maxi) {
