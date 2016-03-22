@@ -15,6 +15,37 @@
 
     var touche = { gauche : false, droite: false, haut: false, bas: false };
 
+    var grille = new Array();
+    var tailleX = 10;
+    var tailleY = 20;
+
+    var tailleCase = 25;
+
+    creerGrille = function()
+    {
+
+    }
+
+    // A MODIFIER
+    /**
+     *  Remplissage de la grille
+     */
+    remplirGrille = function()
+    {
+        for(j = 0; j < tailleY; j++)
+        {
+            for(i = 0; i < tailleX; i++)
+            {
+                grille[i][j] = rand(0, 5);
+            }
+        }
+    }
+
+    affichageGrille = function()
+    {
+        context.drawLine(20, 20, 50, 50);
+    }
+
     rand = function(mini, maxi) {
         return (Math.random()*(maxi-mini+1))+mini;
     }
@@ -58,7 +89,7 @@
 
         context.fillStyle="blue";
 
-        
+        affichageGrille();
     }
     
     
