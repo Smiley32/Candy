@@ -6,14 +6,244 @@
     <title>Candy Crush</title>
     <script>
     
-    var niveau = { x: 250,         // X position       
-               y: 113,         // Y position        
-               tailleX: 8,     // Number of tile columns       
-               tailleY: 8,     // Number of tile rows      
-               tailleCase: 40,  // Visual width of a tile       
-              // tailleCaseY: 40,  Visual height of a tile        
-               grille: [],     // The two-dimensional tile array        
-               caseADeplacer: { column: 0, row: 0 } };
+    /*
+
+    Développement de Candy Crush Saga en Javascript
+
+    Mohamed Lakhal - Emile Jeannin
+
+    */
+    // Types agrégé
+    
+    var niveau = { x: 25,         // X position       
+                   y: 25,         // Y position        
+                   tailleX: 10,     // Number of tile columns       
+                   tailleY: 10,     // Number of tile rows      
+                   tailleCase: 50, // Visual width of a tile       
+                   // tailleCaseY: 40,  Visual height of a tile        
+                   grille: [],     // The two-dimensional tile array        
+                   caseADeplacer: { x: 0, y: 0 } };
+
+
+    caseCliquee = function(pos)
+    {
+        // on calcule coordonnées de la tuile
+        var tx = Math.floor((pos.x - niveau.x) / niveau.tailleCase);
+        var ty = Math.floor((pos.y - niveau.y) / niveau.tailleCase);
+
+        // on vérifie si la tuile est valide
+        if (tx >= 0 && tx < niveau.tailleX && ty >= 0 && ty < niveau.tailleY) // La tuile est valide
+            return { x: tx, y: ty };        
+        else //tuile non valide
+            return{ x: -1, y: -1 };
+    }
+
+    sontAdjacentes = function(case1, case2)
+    {
+        //on vérifie si la tuile est sur une case adjacente (à côté) de la tuile selectionnée
+        if ((Math.abs(case1.x - case2.x) == 1 && case1.y == case2.y) || (Math.abs(case1.y - case2.y) == 1 && case1.x == case2.x))
+            return true;
+        else
+            return false;
+    }
+
+
+    echanger = function(case1, case2)
+    {
+        var temp = niveau.grille[case1.x][case1.y];
+        niveau.grille[case1.x][case1.y] = niveau.grille[case2.x][case2.y];
+        niveau.grille[case2.x][case2.y] = temp;
+    }
+
+/*
+    //fps
+
+    var lastframe =0;
+
+    var fpstime = 0;
+
+    var framecount = 0;
+
+    var fps = 0;
+
+
+    //score
+
+    var score = 0;
+
+
+    //fin du game
+
+    var gameover = false;
+
+
+    //buttons
+
+    var buttons = [ { x: 30, y: 240, width: 150, height: 50, text: "New Game" } ];
+
+    drawButtons = function() {
+
+    for (var i=0; i<buttons.length; i++) {
+
+    //button shape
+
+    context.fillStyle = "#000000";
+
+    context.fillRect(buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height);
+
+
+    //button text
+
+    context.fillStyle = "#ffffff";
+
+    context.font = "18 px Verdana";
+
+    var textdim = context.measureText(buttons[i].text);
+
+    context.fillText(buttons[i].text, buttons[i].x + (buttons[i].width-textdim.width)/2, buttons[i].y+30);
+
+    }
+
+    }
+
+
+
+
+    update = function(tframe) {
+
+    var dt = (tframe - lastframe) / 1000;
+
+    lastrame = tframe;
+
+
+    updateFps(dt);
+
+
+    updateFps = function(dt) {
+
+    if (fpstime > 0.25) {
+
+    fps = Math.round(framecount / fpstime);
+
+
+    //reset
+
+    fpstime = 0;
+
+    framecount = 0;
+
+    }
+
+
+    //augmente le temps et le framecount
+
+    fpstime += dt;
+
+    framecount++;
+
+    }
+
+    }
+
+
+    A METTRE DANS RENDER JE PENSE
+
+    //text centré
+
+    drawCenterText = function(text, x, y, width) {
+
+    var textdim = context.measureText(text);
+
+    context.fillText(text, x + (width-textdim.width)/2, y);
+
+    }
+
+
+    //draw score
+
+    context.fillStyle = "#000000"; //noir
+
+    context.font = "24px Verdana";
+
+    drawCenterText("Score: "; 30, level.y+40, 150);
+
+    drawCenterText(score, 30, level.y+70, 150);
+
+     
+
+    //draw level background
+
+    var levelwidth = level.columns * level.tilewidth;
+
+    var levelheight = level.rows * level.tileheight;
+
+    context.fillStyle = "#000000";
+
+    context.fillRect(level.x - 4, level.y - 4, levelwidth + 8, levelheight + 8);
+
+
+    //gameover
+
+    if (gameover) {
+
+    context.fillStyle = "rgba(0, 0, 0, 0.8)";
+
+    context.fillRect(level.x, level.y, levelwidth, levelheight);
+
+
+    context.fillStyle = "#ffffff";
+
+    context.font = "24px Verdana";
+
+    drawCenterText("Game Over!", level.x, level.y + levelheight /2 +10, levelwidth);
+
+    }
+
+
+    //draw une frame avec bordure
+
+    drawFrame = function() {
+
+    context.fillStyle = "#d0d0d0"; //gris
+
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    context.fillStyle = "#e8eaec";
+
+    context.fillRect(1, 1, canvas.width-2, canvas.height-2);
+
+
+    //draw header
+
+    context.fillStyle = "#303030";
+
+    context.fillRect(0, 0, canvas.width, 65);
+
+
+    //Title
+
+    context.fillStyle = "#ffffff";
+
+    context.font = "24px Verdana";
+
+    context.fillText("Candy Crush - Mohamed & Emile", 10, 30);
+
+
+    //FPS
+
+    context.fillStyle = "#ffffff";
+
+    context.font = "12px Verdana";
+
+    context.fillText("FPS: " + fps, 13, 50);
+
+
+    }
+
+
+
+*/
+*/
 
     var rectangle = { x: 0, y: 0, hauteur: 0, largeur: 0, couleur: "" };
 
@@ -24,17 +254,46 @@
 
     var touche = { gauche : false, droite: false, haut: false, bas: false };
 
-    var grille = new Array();
-    var tailleX = 10;
-    var tailleY = 20;
+    // var grille = new Array();
+    // var tailleX = 10;
+    // var tailleY = 20;
+    
+    var grilleDeDestruction = new Array();
 
     var tailleCase = 25;
 
+    estValide = function( cs )
+    {
+        if( cs.x >= 0 && cs.x < niveau.tailleX && cs.y >= 0 && cs.y < niveau.tailleY && niveau.grille[cs.x][cs.y] != 0 && niveau.grille[cs.x][cs.y] != -1)
+            return true;
+        else
+            return false;
+    }
+    
+    creerGrilleDeDestruction = function()
+    {
+        for(i = 0; i < niveau.tailleX; i++)
+        {
+            grilleDeDestruction[i] = new Array();
+        }
+    }
+    
+    remplirGrilleDeDestruction = function()
+    {
+        for(j = 0; j < niveau.tailleY; j++)
+        {
+            for(i = 0; i < niveau.tailleX; i++)
+            {
+                grilleDeDestruction[i][j] = false;
+            }
+        }
+    }
+
     creerGrille = function()
     {
-        for(i = 0; i < tailleX; i++)
+        for(i = 0; i < niveau.tailleX; i++)
         {
-            grille[i] = new Array();
+            niveau.grille[i] = new Array();
         }
     }
 
@@ -44,11 +303,11 @@
      */
     remplirGrille = function()
     {
-        for(j = 0; j < tailleY; j++)
+        for(j = 0; j < niveau.tailleY; j++)
         {
-            for(i = 0; i < tailleX; i++)
+            for(i = 0; i < niveau.tailleX; i++)
             {
-                grille[i][j] = rand(0, 5);
+                niveau.grille[i][j] = rand(0, 5)|0; // Le |0 c'est pour que ce soit un entier
             }
         }
     }
@@ -56,56 +315,232 @@
     affichageGrille = function()
     {
         // Lignes verticales
-        for(i = 0; i <= tailleX; i++)
+        for(i = 0; i <= niveau.tailleX; i++)
         {
-            context.fillRect(tailleCase*(i+1), tailleCase, 1, tailleY * tailleCase);
+            context.fillRect(niveau.tailleCase*(i) + niveau.x, niveau.y, 1, niveau.tailleY * niveau.tailleCase);
         }
         // Lignes horizontales
-        for(j = 0; j <= tailleY; j++)
+        for(j = 0; j <= niveau.tailleY; j++)
         {
-            context.fillRect(tailleCase, tailleCase*(j+1), tailleX * tailleCase, 1);
+            context.fillRect(niveau.x, niveau.tailleCase*(j) + niveau.y, niveau.tailleX * niveau.tailleCase, 1);
         }
     }
 
-    getMouseTile = function(pos) {
-        // on calcule coordonnées de la tuile
-        var tx = Math.floor((pos.x - niveau.x) / niveau.tailleCaseX);
-        var ty = Math.floor((pos.y - niveau.y) / niveau.tailleCaseY);
-        
-        // on vérifie si la tuile est valide
-        if (tx >= 0 && tx < niveau.tailleX && ty >= 0 && ty < niveau.tailleY) {
-            // La tuile est valide
-            return { x: tx, y: ty };        
-        }
-        else { //tuile non valide
-            return{ x: -1, y: -1 };
+    affichageBonbons = function()
+    {
+        for(j = 0; j < niveau.tailleY; j++)
+        {
+            for(i = 0; i < niveau.tailleX; i++)
+            {
+                couleurBonbon(niveau.grille[i][j]);
+                context.fillRect(niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
+            }
         }
     }
+
+    affichageCaseSelec = function(caseSelec)
+    {
+        context.fillStyle="rgba(0, 0, 0, 0.3)";
+        context.fillRect(niveau.tailleCase*caseSelec.x + niveau.x, niveau.tailleCase*caseSelec.y + niveau.y, niveau.tailleCase, niveau.tailleCase);
+    }
     
-    canSwap = function(x1, y1, x2, y2) {
-        //on vérifie si la tuile est sur une case adjacente (à côté) de la tuile selectionnée
-        if ((Math.abs(x1 - x2) == 1 && y1 == y2) || (Math.abs(y1 - y2) == 1 && x1 == x2)) {
-        return true;
+    couleurBonbon = function(numCase)
+    {
+        switch(numCase)
+        {
+            case 0:
+                context.fillStyle="black";
+                break;
+            case 1:
+                context.fillStyle="red";
+                break;
+            case 2:
+                context.fillStyle="blue";
+                break;
+            case 3:
+                context.fillStyle="green";
+                break;
+            case 4:
+                context.fillStyle="orange";
+                break;
+            case 5:
+                context.fillStyle="yellow";
+                break;
+            case undefined:
+                context.fillStyle="pink";
+                break;
+            default:
+               context.fillStyle="lime";
+                break;
         }
-        else
-              return false;
-        }
-        
-        swap = function(x1, y1, x2, y2) {
-        var temp = niveau.grille[x1][y1];
-        niveau.grille[x1][y1] = niveau.grille[x2][y2];
-        niveau.grille[x2][y2] = temp;
     }
 
     rand = function(mini, maxi) {
         return (Math.random()*(maxi-mini+1))+mini;
     }
+    
+    // Detection
+    detecter = function()
+    {
+        var pasDeCasesADetruire = true;
+        var couleurTemp;
+        var nbCasesAlignees;
+        for(j = 0; j < niveau.tailleY; j++)
+        {
+            couleurTemp = niveau.grille[0][j]; // La couleur temporaire est égale à la première case de la grille
+            nbCasesAlignees = 1; // Le nombre de cases alignées est égal à 1 en début de ligne
+
+            /** Parcours des lignes **/
+            for(i = 1; i < niveau.tailleX; i++)
+            {
+                if(couleurTemp == niveau.grille[i][j]) // Si la couleur temporaire est la même dans cette case, on incrémente nbCasesAlignees
+                    nbCasesAlignees++;
+                else if(nbCasesAlignees >= 3 && couleurTemp != 0) // Si la couleur n'est pas la même mais qu'on a un alignement, on note dans le deuxième tableau
+                {
+                    noterLignes(i, j, nbCasesAlignees);
+                    nbCasesAlignees = 1;
+                    couleurTemp = niveau.grille[i][j];
+                    pasDeCasesADetruire = false;
+                }
+                else
+                {
+                    nbCasesAlignees = 1;
+                    couleurTemp = niveau.grille[i][j];
+                }
+
+                if(i == niveau.tailleX - 1 && nbCasesAlignees >= 3 && couleurTemp != 0)
+                {
+                    noterLignes(i+1, j, nbCasesAlignees);
+                    pasDeCasesADetruire = false;
+                }
+            }
+        } 
+        
+        for(i = 0; i < niveau.tailleX; i++)
+        {
+            couleurTemp = niveau.grille[i][0];
+            nbCasesAlignees = 1; // Le nombre de cases alignées est égal à 1 en début de ligne
+
+            /** Parcours des lignes **/
+            for(j = 1; j < niveau.tailleY; j++)
+            {
+                if(couleurTemp == niveau.grille[i][j]) // Si la couleur temporaire est la même dans cette case, on incrémente nbCasesAlignees
+                    nbCasesAlignees++;
+                else if(nbCasesAlignees >= 3 && couleurTemp != 0) // Si la couleur n'est pas la même mais qu'on a un alignement, on note dans le deuxième tableau
+                {
+                    noterColonnes(i, j, nbCasesAlignees);
+                    nbCasesAlignees = 1;
+                    couleurTemp = niveau.grille[i][j];
+                    pasDeCasesADetruire = false;
+                }
+                else
+                {
+                    nbCasesAlignees = 1;
+                    couleurTemp = niveau.grille[i][j];
+                }
+
+                if(j == niveau.tailleY - 1 && nbCasesAlignees >= 3 && couleurTemp != 0)
+                {
+                    noterColonnes(i, j+1, nbCasesAlignees);
+                    pasDeCasesADetruire = false;
+                }
+            }
+        }
+
+        return pasDeCasesADetruire; // Vrai si il n'y a plus de cases a detruire
+    }
+    
+    noterLignes = function(i, j, nbCasesAlignees)
+    {
+        for(k = i - nbCasesAlignees; k < i; k++) // On parcourt les cases à noter, mais on ne passe pas quand k == i car i n'est pas dans l'alignement
+        {
+            grilleDeDestruction[k][j] = true;
+        }
+    }
+    
+    noterColonnes = function(i, j, nbCasesAlignees)
+    {
+        for(k = j - nbCasesAlignees; k < j; k++)
+        {
+            grilleDeDestruction[i][k] = true;
+        }
+    }
+
+    // Destruction
+    detruire = function()
+    {
+        for(j = 0; j < niveau.tailleY; j++)
+        {
+            for(i = 0; i < niveau.tailleX; i++)
+            {
+                if(grilleDeDestruction[i][j] == true)
+                {
+                    niveau.grille[i][j] = -1;
+                    grilleDeDestruction[i][j] = false; // On en profite pour réinitialiser la grille servant pour la destruction
+                }
+            }
+        }
+    }
+    
+    // Remplacement
+    remplacer = function()
+    {
+        var j;
+        var continuer;
+        
+        for(k = 0; k < niveau.tailleX; k++)
+        {
+            for(i = niveau.tailleY - 1; i >= 0; i--)
+            {
+                if(niveau.grille[k][i] == -1)
+                {
+                    j = i;
+                    continuer = true;
+                    while(j > 0 && continuer == true)
+                    {
+                        j--;
+                        if(niveau.grille[k][j] != 0 && niveau.grille[k][j] != -1) // Si on trouve une case correcte, on remplace
+                        {
+                            niveau.grille[k][i] = niveau.grille[k][j];
+                            niveau.grille[k][j] = -1;
+                            continuer = false; // On n'a plus besoin de rechercher
+                        }
+                    }
+                }
+            }
+        }
+
+        for(k = 0; k < niveau.tailleY; k++)
+        {
+            for(i = 0; i < niveau.tailleX; i++)
+            {
+                if(niveau.grille[i][k] == -1)
+                {
+                    niveau.grille[i][k] = rand(1, 5)|0;
+                }
+            }
+        }
+    }
+
         
     // initialisation (appelée au chargement du corps du document <body onload="init">)    
     init = function() {
         context = document.getElementById("cvs").getContext("2d");
         context.width = document.getElementById("cvs").width;
         context.height = document.getElementById("cvs").height;
+        
+        creerGrille();
+        remplirGrille();
+        
+        creerGrilleDeDestruction();
+        remplirGrilleDeDestruction();
+
+        // Pas de combi au départ :
+        while(!detecter())
+        {
+            detruire();
+            remplacer();
+        }
 
         document.addEventListener("keydown", captureAppuiToucheClavier)
         document.addEventListener("keyup", captureRelacheToucheClavier)
@@ -141,6 +576,11 @@
         context.fillStyle="blue";
 
         affichageGrille();
+
+        context.fillStyle="pink";
+        affichageBonbons();
+
+        affichageCaseSelec(niveau.caseADeplacer);
     }
     
     
@@ -210,6 +650,29 @@
             clic.x = event.pageX - event.target.offsetLeft;
             clic.y = event.pageY - event.target.offsetTop;
         }
+        if(estValide(caseCliquee(clic)))
+        {
+            if(sontAdjacentes(niveau.caseADeplacer, caseCliquee(clic)))
+            {
+                console.log("On échange !");
+                echanger(niveau.caseADeplacer, caseCliquee(clic));
+                if(detecter()) // Si il n'y a pas de cases a detruire
+                {
+                    echanger(niveau.caseADeplacer, caseCliquee(clic)); // On reechange
+                }
+                else
+                {
+                    while(!detecter())
+                    {
+                        detruire();
+                        remplacer();
+                    }
+                }
+            }
+            niveau.caseADeplacer = caseCliquee(clic);
+            console.log(caseCliquee(clic));
+        }
+        
     }  
     </script>
 </head>
