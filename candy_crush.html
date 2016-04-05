@@ -15,13 +15,16 @@
     */
     // Types agrégé
     
-    var niveau = { x: 25,         // X position       
-                   y: 25,         // Y position        
+    var niveau = { x: 0,         // X position       
+                   y: 0,         // Y position        
                    tailleX: 10,     // Number of tile columns       
                    tailleY: 10,     // Number of tile rows      
-                   tailleCase: 50, // Visual width of a tile       
+                   tailleCase: 60, // Visual width of a tile       
                    // tailleCaseY: 40,  Visual height of a tile        
-                   grille: [],     // The two-dimensional tile array        
+                   grille: [],     // The two-dimensional tile array   
+                   finDuJeu: 0,    // 0 si le jeu est encore en cours, 1 si le jeu est gagné, 2 si le jeu est perdu
+                   nbCoups: 0,     // Nombre de coups
+                   score: 0,       // Score du joueur
                    caseADeplacer: { x: 0, y: 0 } };
 
 
@@ -32,7 +35,7 @@
         var ty = Math.floor((pos.y - niveau.y) / niveau.tailleCase);
 
         // on vérifie si la tuile est valide
-        if (tx >= 0 && tx < niveau.tailleX && ty >= 0 && ty < niveau.tailleY) // La tuile est valide
+         if (tx >= 0 && tx < niveau.tailleX && ty >= 0  && ty < niveau.tailleY) // La tuile est valide
             return { x: tx, y: ty };        
         else //tuile non valide
             return{ x: -1, y: -1 };
@@ -41,7 +44,7 @@
     sontAdjacentes = function(case1, case2)
     {
         //on vérifie si la tuile est sur une case adjacente (à côté) de la tuile selectionnée
-        if ((Math.abs(case1.x - case2.x) == 1 && case1.y == case2.y) || (Math.abs(case1.y - case2.y) == 1 && case1.x == case2.x))
+         if ((Math.abs(case1.x - case2.x) == 1 && case1.y == case2.y) ||  (Math.abs(case1.y - case2.y) == 1 && case1.x == case2.x))
             return true;
         else
             return false;
@@ -55,14 +58,15 @@
         niveau.grille[case2.x][case2.y] = temp;
     }
 
+
 /*
-    //fps
+    //FPS
 
-    var lastframe =0;
+    var derniereFrame =0;
 
-    var fpstime = 0;
+    var tempsFps = 0;
 
-    var framecount = 0;
+    var compteurFrame = 0;
 
     var fps = 0;
 
@@ -72,48 +76,38 @@
     var score = 0;
 
 
-    //fin du game
+    //fin du jeu
 
-    var gameover = false;
-
-
-    //buttons
-
-    var buttons = [ { x: 30, y: 240, width: 150, height: 50, text: "New Game" } ];
-
-    drawButtons = function() {
-
-    for (var i=0; i<buttons.length; i++) {
-
-    //button shape
-
-    context.fillStyle = "#000000";
-
-    context.fillRect(buttons[i].x, buttons[i].y, buttons[i].width, buttons[i].height);
+    var finDuJeu = false;
 
 
-    //button text
+    // boutons
 
-    context.fillStyle = "#ffffff";
+    var boutons = { x: 30, y: 240, width: 150, height: 50, text: "Nouveau Jeu" };
 
-    context.font = "18 px Verdana";
+    dessinerBoutons = function() {
+        for (var i = 0; i < boutons.length; i++) {
+        // forme boutons
+        context.fillStyle = "#000000";
 
-    var textdim = context.measureText(buttons[i].text);
+        context.fillRect(boutons[i].x, boutons[i].y, boutons[i].width, boutons[i].height);
 
-    context.fillText(buttons[i].text, buttons[i].x + (buttons[i].width-textdim.width)/2, buttons[i].y+30);
+        // Texte du bouton
+        context.fillStyle = "#ffffff";
+        context.font = "18 px Verdana";
+        var textdim = context.measureText(boutons[i].text);
 
+        context.fillText(boutons[i].text, boutons[i].x + (boutons[i].width-textdim.width)/2, boutons[i].y+30);
+        }
     }
-
-    }
-
 
 
 
     update = function(tframe) {
 
-    var dt = (tframe - lastframe) / 1000;
+    var dt = (tframe - derniereFrame) / 1000;
 
-    lastrame = tframe;
+    derniereFrame = tframe;
 
 
     updateFps(dt);
@@ -121,25 +115,25 @@
 
     updateFps = function(dt) {
 
-    if (fpstime > 0.25) {
+    if (tempsFps > 0.25) {
 
-    fps = Math.round(framecount / fpstime);
+    fps = Math.round(compteurFrame / tempsFps);
 
 
     //reset
 
-    fpstime = 0;
+    tempsFps = 0;
 
-    framecount = 0;
+    compteurFrame = 0;
 
     }
 
 
     //augmente le temps et le framecount
 
-    fpstime += dt;
+    tempsFps += dt;
 
-    framecount++;
+    compteurFrame++;
 
     }
 
@@ -239,11 +233,11 @@
 
 
     }
-
+    
 
 
 */
-
+    
     var rectangle = { x: 0, y: 0, hauteur: 0, largeur: 0, couleur: "" };
 
     var obstacle = [];
@@ -309,6 +303,11 @@
                 niveau.grille[i][j] = rand(0, 5)|0; // Le |0 c'est pour que ce soit un entier
             }
         }
+    }
+    
+    drawCenterText = function(text, x, y, width) {
+        var textDim = context.measureText(text);
+        context.fillText(text, x + (width - textDim.width) / 2, y);
     }
 
     affichageGrille = function()
@@ -413,7 +412,7 @@
                     pasDeCasesADetruire = false;
                 }
             }
-        } 
+        }
         
         for(i = 0; i < niveau.tailleX; i++)
         {
@@ -475,6 +474,7 @@
                 if(grilleDeDestruction[i][j] == true)
                 {
                     niveau.grille[i][j] = -1;
+                    niveau.score = niveau.score + 10; // On augmente de 10 a chaque case detruite
                     grilleDeDestruction[i][j] = false; // On en profite pour réinitialiser la grille servant pour la destruction
                 }
             }
@@ -540,6 +540,8 @@
             detruire();
             remplacer();
         }
+        
+        niveau.score = 0;
 
         document.addEventListener("keydown", captureAppuiToucheClavier)
         document.addEventListener("keyup", captureRelacheToucheClavier)
@@ -561,7 +563,37 @@
      *  @param  d   date courante
      */
     update = function(d) {
+        if(estValide(caseCliquee(clic)) && niveau.finDuJeu == 0)
+        {
+            if(sontAdjacentes(niveau.caseADeplacer, caseCliquee(clic)))
+            {
+                console.log("On échange !");
+                echanger(niveau.caseADeplacer, caseCliquee(clic));
+                if(detecter()) // Si il n'y a pas de cases a detruire
+                {
+                    echanger(niveau.caseADeplacer, caseCliquee(clic)); // On reechange
+                }
+                else
+                {
+                    while(!detecter())
+                    {
+                        detruire();
+                        remplacer();
+                    }
+                    niveau.nbCoups++;
+                }
+            }
+            niveau.caseADeplacer = caseCliquee(clic);
+            console.log(caseCliquee(clic));
+        }
         
+        document.getElementById("coups").innerHTML = niveau.nbCoups;
+        document.getElementById("score").innerHTML = niveau.score;
+        
+        if(niveau.nbCoups > 10 && niveau.score < 1000)
+            niveau.finDuJeu = 2;
+        else if(score >= 1000)
+            niveau.finDuJeu = 1;
     }
     
     
@@ -580,6 +612,20 @@
         affichageBonbons();
 
         affichageCaseSelec(niveau.caseADeplacer);
+        
+        if (niveau.finDuJeu != 0) {
+            context.fillStyle = "rgba(0, 0, 0, 0.8)";
+            context.fillRect(niveau.x, niveau.y, niveau.tailleCase * niveau.tailleX, niveau.tailleCase * niveau.tailleY);
+        
+            context.fillStyle = "#ffffff";
+            context.font = "24px Verdana";
+        
+            if(niveau.finDuJeu == 1)
+                drawCenterText("Tu as gagné !", niveau.x, niveau.y + (niveau.tailleCase * niveau.tailleY) / 2 + 10, niveau.tailleCase * niveau.tailleX);
+            else
+                drawCenterText("Tu as perdu...", niveau.x, niveau.y + (niveau.tailleCase * niveau.tailleY) / 2 + 10, niveau.tailleCase * niveau.tailleX);
+        
+        }
     }
     
     
@@ -640,7 +686,7 @@
     }
     
     /**
-     *  Fonction appelée lorsqu'une touche du clavier est relâchée
+     *  Fonction appelée lorsque la souris bouge
      *  Associée à l'événement "click"
      */
     captureClicSouris = function(event) {
@@ -649,37 +695,25 @@
             clic.x = event.pageX - event.target.offsetLeft;
             clic.y = event.pageY - event.target.offsetTop;
         }
-        if(estValide(caseCliquee(clic)))
-        {
-            if(sontAdjacentes(niveau.caseADeplacer, caseCliquee(clic)))
-            {
-                console.log("On échange !");
-                echanger(niveau.caseADeplacer, caseCliquee(clic));
-                if(detecter()) // Si il n'y a pas de cases a detruire
-                {
-                    echanger(niveau.caseADeplacer, caseCliquee(clic)); // On reechange
-                }
-                else
-                {
-                    while(!detecter())
-                    {
-                        detruire();
-                        remplacer();
-                    }
-                }
-            }
-            niveau.caseADeplacer = caseCliquee(clic);
-            console.log(caseCliquee(clic));
-        }
-        
     }  
     </script>
 </head>
 
 <body onload="init()">
 
-    <canvas id="cvs" width="800" height="600" style="margin: 10px auto; border: solid 1px #000;"></canvas>
+    <canvas id="cvs" width="600" height="600" style="margin: 10px auto; border: solid 1px #000;"></canvas>
+    
+   <button type="new">
+		<img src="images/newgameCC.png"
+		    width="150" height="50"> 
+	</button>
 
+	 
+<p style="border: solid 5px purple; border-radius: 15px; width: 150px; height: 180px; text-align: center; padding-top: 10px;">Coups Restants <br><span style="display: block; margin-top: 60px;" id="coups">10</span></p>
+
+	<p style="border: solid 5px purple; border-radius: 15px; width: 150px; height: 180px; text-align: center; padding-top: 10px;">Score <br><span style="display: block; margin-top: 60px;" id="score"></span></p>	
+	
 </body>
 
 </html>
+
