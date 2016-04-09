@@ -27,7 +27,18 @@
                    score: 0,       // Score du joueur
                    caseADeplacer: { x: 0, y: 0 } };
 
-
+    // Bonbons
+    var blue = new Image();
+    blue.src = 'images/Blue.png';
+    var green = new Image();
+    green.src = 'images/Green.png';
+    var orange = new Image();
+    orange.src = 'images/Orange.png';
+    var red = new Image();
+    red.src = 'images/Red.png';
+    var yellow = new Image();
+    yellow.src = 'images/Yellow.png';
+        
     caseCliquee = function(pos)
     {
         // on calcule coordonnées de la tuile
@@ -331,7 +342,7 @@
             for(i = 0; i < niveau.tailleX; i++)
             {
                 couleurBonbon(niveau.grille[i][j]);
-                context.fillRect(niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
+                // context.fillRect(niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
             }
         }
     }
@@ -351,18 +362,23 @@
                 break;
             case 1:
                 context.fillStyle="red";
+                context.drawImage(red, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
                 break;
             case 2:
                 context.fillStyle="blue";
+                context.drawImage(blue, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
                 break;
             case 3:
                 context.fillStyle="green";
+                context.drawImage(green, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
                 break;
             case 4:
                 context.fillStyle="orange";
+                context.drawImage(orange, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
                 break;
             case 5:
                 context.fillStyle="yellow";
+                context.drawImage(yellow, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
                 break;
             case undefined:
                 context.fillStyle="pink";
@@ -474,7 +490,7 @@
                 if(grilleDeDestruction[i][j] == true)
                 {
                     niveau.grille[i][j] = -1;
-                    niveau.score = niveau.score + 10; // On augmente de 10 a chaque case detruite
+                    niveau.score = niveau.score + 60; // On augmente de 60 a chaque case detruite
                     grilleDeDestruction[i][j] = false; // On en profite pour réinitialiser la grille servant pour la destruction
                 }
             }
@@ -552,11 +568,12 @@
     
     
     boucleDeJeu = function() {
-        update(Date.now());    
-        render();
+        // update(Date.now());  
+        // setInterval(render, 1000);
+        setTimeout(update, 1000);
+        setTimeout(render, 1000);
         requestAnimationFrame(boucleDeJeu);
     }
-    
     
     /**
      *  Mise à jour de l'état du jeu
@@ -569,9 +586,11 @@
             {
                 console.log("On échange !");
                 echanger(niveau.caseADeplacer, caseCliquee(clic));
+                
                 if(detecter()) // Si il n'y a pas de cases a detruire
                 {
                     echanger(niveau.caseADeplacer, caseCliquee(clic)); // On reechange
+                    render();
                 }
                 else
                 {
@@ -583,6 +602,7 @@
                     niveau.nbCoups++;
                 }
             }
+            
             niveau.caseADeplacer = caseCliquee(clic);
             console.log(caseCliquee(clic));
         }
