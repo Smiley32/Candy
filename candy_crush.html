@@ -25,7 +25,7 @@
                    finDuJeu: 0,    // 0 si le jeu est encore en cours, 1 si le jeu est gagné, 2 si le jeu est perdu
                    nbCoups: 0,     // Nombre de coups
                    score: 0,       // Score du joueur
-                   caseADeplacer: { x: 0, y: 0 } };
+                   caseADeplacer: { x: -1, y: -1 } };
 
     // Bonbons
     var blue = new Image();
@@ -254,7 +254,7 @@
     var obstacle = [];
                 
     // clic sur la zone de jeu (coordonnées relatives au canvas)
-    var clic = { x: 0, y: 0 };
+    var clic = { x: -1, y: -1 };
 
     var touche = { gauche : false, droite: false, haut: false, bas: false };
 
@@ -566,12 +566,9 @@
         boucleDeJeu();
     }
     
-    
     boucleDeJeu = function() {
-        // update(Date.now());  
-        // setInterval(render, 1000);
-        setTimeout(update, 1000);
-        setTimeout(render, 1000);
+        update(Date.now());  
+        render();
         requestAnimationFrame(boucleDeJeu);
     }
     
@@ -590,7 +587,7 @@
                 if(detecter()) // Si il n'y a pas de cases a detruire
                 {
                     echanger(niveau.caseADeplacer, caseCliquee(clic)); // On reechange
-                    render();
+                    niveau.caseADeplacer = caseCliquee(clic);
                 }
                 else
                 {
@@ -600,19 +597,26 @@
                         remplacer();
                     }
                     niveau.nbCoups++;
+                    
+                    // Pour ne pas qu'il y ait de cases cliquee apres un coup reussi
+                    niveau.caseADeplacer.x = -1;
+                    niveau.caseADeplacer.y = -1;
+                    clic.x = -1;
+                    clic.y = -1;
                 }
             }
-            
-            niveau.caseADeplacer = caseCliquee(clic);
-            console.log(caseCliquee(clic));
+            else
+            {
+                niveau.caseADeplacer = caseCliquee(clic);
+            }
         }
         
-        document.getElementById("coups").innerHTML = niveau.nbCoups;
+        document.getElementById("coups").innerHTML = 10 - niveau.nbCoups;
         document.getElementById("score").innerHTML = niveau.score;
         
-        if(niveau.nbCoups > 10 && niveau.score < 1000)
+        if(niveau.nbCoups >= 10 && niveau.score < 6000)
             niveau.finDuJeu = 2;
-        else if(niveau.score >= 1000)
+        else if(niveau.score >= 6000)
             niveau.finDuJeu = 1;
     }
     
@@ -631,7 +635,8 @@
         context.fillStyle="pink";
         affichageBonbons();
 
-        affichageCaseSelec(niveau.caseADeplacer);
+        if(niveau.caseADeplacer.x != -1 && niveau.caseADeplacer.y != -1)
+            affichageCaseSelec(niveau.caseADeplacer);
         
         if (niveau.finDuJeu != 0) {
             context.fillStyle = "rgba(0, 0, 0, 0.8)";
