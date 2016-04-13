@@ -334,6 +334,21 @@
             context.fillRect(niveau.x, niveau.tailleCase*(j) + niveau.y, niveau.tailleX * niveau.tailleCase, 1);
         }
     }
+    
+    affichageCasesADetruire = function()
+    {
+        for(j = 0; j < niveau.tailleY; j++)
+        {
+            for(i = 0; i < niveau.tailleX; i++)
+            {
+                if(grilleDeDestruction[i][j] == true)
+                {
+                    context.fillStyle="rgba(255, 0, 0, 0.3)";
+                    context.fillRect(niveau.tailleCase*i + niveau.x, niveau.tailleCase*j + niveau.y, niveau.tailleCase, niveau.tailleCase);
+                }
+            }
+        }
+    }
 
     affichageBonbons = function()
     {
@@ -571,7 +586,7 @@
         render();
         requestAnimationFrame(boucleDeJeu);
     }
-    
+    var test;
     /**
      *  Mise à jour de l'état du jeu
      *  @param  d   date courante
@@ -591,12 +606,25 @@
                 }
                 else
                 {
-                    while(!detecter())
+                    test = setInterval(function()
                     {
                         detruire();
                         remplacer();
-                    }
-                    niveau.nbCoups++;
+                        detecter();
+                        
+                        if(detecter())
+                        {
+                            clearInterval(test);
+                            niveau.nbCoups++;
+                        }
+                    }, 1000);
+                    
+                    /*while(!detecter())
+                    {
+                        detruire();
+                        remplacer();
+                    }*/
+                    
                     
                     // Pour ne pas qu'il y ait de cases cliquee apres un coup reussi
                     niveau.caseADeplacer.x = -1;
@@ -634,6 +662,7 @@
 
         context.fillStyle="pink";
         affichageBonbons();
+        affichageCasesADetruire();
 
         if(niveau.caseADeplacer.x != -1 && niveau.caseADeplacer.y != -1)
             affichageCaseSelec(niveau.caseADeplacer);
