@@ -30,14 +30,38 @@
     // Bonbons
     var blue = new Image();
     blue.src = 'images/Blue.png';
+    var blueComboHoriz = new Image();
+    blueComboHoriz.src = 'images/ComboBlueHoriz.png';
+    var blueComboVert = new Image();
+    blueComboVert.src = 'images/ComboBlueVert.png';
+    
     var green = new Image();
     green.src = 'images/Green.png';
+    var greenComboHoriz = new Image();
+    greenComboHoriz.src = 'images/ComboGreenHoriz.png';
+    var greenComboVert = new Image();
+    greenComboVert.src = 'images/ComboGreenVert.png';
+    
     var orange = new Image();
     orange.src = 'images/Orange.png';
+    var orangeComboHoriz = new Image();
+    orangeComboHoriz.src = 'images/ComboOrangeHoriz.png';
+    var orangeComboVert = new Image();
+    orangeComboVert.src = 'images/ComboOrangeVert.png';
+    
     var red = new Image();
     red.src = 'images/Red.png';
+    var redComboHoriz = new Image();
+    redComboHoriz.src = 'images/ComboRedHoriz.png';
+    var redComboVert = new Image();
+    redComboVert.src = 'images/ComboRedVert.png';
+    
     var yellow = new Image();
     yellow.src = 'images/Yellow.png';
+    var yellowComboHoriz = new Image();
+    yellowComboHoriz.src = 'images/ComboYellowHoriz.png';
+    var yellowComboVert = new Image();
+    yellowComboVert.src = 'images/ComboYellowVert.png';
         
     caseCliquee = function(pos)
     {
@@ -312,6 +336,8 @@
             for(i = 0; i < niveau.tailleX; i++)
             {
                 niveau.grille[i][j] = rand(0, 5)|0; // Le |0 c'est pour que ce soit un entier
+                if(niveau.grille[i][j] == 0) // Pour avoir moins de cases vides
+                    niveau.grille[i][j] = rand(0, 5)|0;
             }
         }
     }
@@ -379,21 +405,51 @@
                 context.fillStyle="red";
                 context.drawImage(red, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
                 break;
+            case 6:
+                context.drawImage(redComboHoriz, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
+                break;
+            case 11:
+                context.drawImage(redComboVert, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
+                break;
             case 2:
                 context.fillStyle="blue";
                 context.drawImage(blue, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
+                break;
+            case 7:
+                context.drawImage(blueComboHoriz, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
+                break;
+            case 12:
+                context.drawImage(blueComboVert, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
                 break;
             case 3:
                 context.fillStyle="green";
                 context.drawImage(green, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
                 break;
+            case 8:
+                context.drawImage(greenComboHoriz, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
+                break;
+            case 13:
+                context.drawImage(greenComboVert, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
+                break;
             case 4:
                 context.fillStyle="orange";
                 context.drawImage(orange, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
                 break;
+            case 9:
+                context.drawImage(orangeComboHoriz, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
+                break;
+            case 14:
+                context.drawImage(orangeComboVert, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
+                break;
             case 5:
                 context.fillStyle="yellow";
                 context.drawImage(yellow, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
+                break;
+            case 10:
+                context.drawImage(yellowComboHoriz, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
+                break;
+            case 15:
+                context.drawImage(yellowComboVert, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
                 break;
             case undefined:
                 context.fillStyle="pink";
@@ -414,32 +470,94 @@
         var pasDeCasesADetruire = true;
         var couleurTemp;
         var nbCasesAlignees;
+        var detruireLigne = false;
+        var detruireColonne = false;
+        
         for(j = 0; j < niveau.tailleY; j++)
         {
             couleurTemp = niveau.grille[0][j]; // La couleur temporaire est égale à la première case de la grille
+            if(couleurTemp > 10)
+                couleurTemp -= 10;
+            if(couleurTemp > 5)
+                couleurTemp -= 5;
             nbCasesAlignees = 1; // Le nombre de cases alignées est égal à 1 en début de ligne
 
             /** Parcours des lignes **/
             for(i = 1; i < niveau.tailleX; i++)
             {
-                if(couleurTemp == niveau.grille[i][j]) // Si la couleur temporaire est la même dans cette case, on incrémente nbCasesAlignees
+                if(couleurTemp == niveau.grille[i][j] || couleurTemp == niveau.grille[i][j] - 5 || couleurTemp == niveau.grille[i][j] - 10) // Si la couleur temporaire est la même dans cette case, on incrémente nbCasesAlignees
                     nbCasesAlignees++;
                 else if(nbCasesAlignees >= 3 && couleurTemp != 0) // Si la couleur n'est pas la même mais qu'on a un alignement, on note dans le deuxième tableau
                 {
                     noterLignes(i, j, nbCasesAlignees);
+                    
+                    for(k = 1; k <= nbCasesAlignees; k++)
+                    {
+                        if(niveau.grille[i - k][j] <= 10 && niveau.grille[i - k][j] > 5)
+                            detruireLigne = true;
+                            
+                        if(niveau.grille[i - k][j] > 10)
+                            noterColonnes(i - k, niveau.tailleY, niveau.tailleY);
+                    }
+                    
+                    if(detruireLigne)
+                    {
+                        noterLignes(niveau.tailleX, j, niveau.tailleX);
+                        detruireLigne = false;
+                    }
+                    
+                    if(nbCasesAlignees >= 4)
+                    {
+                        // Création d'une case combo verticale car l'alignement est horizontal
+                        niveau.grille[i - 2][j] = niveau.grille[i - 2][j] + 10;
+                        grilleDeDestruction[i - 2][j] = false;
+                    }
+                    
                     nbCasesAlignees = 1;
                     couleurTemp = niveau.grille[i][j];
+                    if(couleurTemp > 10)
+                        couleurTemp -= 10;
+                    if(couleurTemp > 5)
+                        couleurTemp -= 5;
                     pasDeCasesADetruire = false;
+                    
                 }
                 else
                 {
                     nbCasesAlignees = 1;
                     couleurTemp = niveau.grille[i][j];
+                    if(couleurTemp > 10)
+                        couleurTemp -= 10;
+                    if(couleurTemp > 5)
+                        couleurTemp -= 5;
                 }
 
                 if(i == niveau.tailleX - 1 && nbCasesAlignees >= 3 && couleurTemp != 0)
                 {
                     noterLignes(i+1, j, nbCasesAlignees);
+                    
+                    for(k = 1; k <= nbCasesAlignees; k++)
+                    {
+                        if(niveau.grille[i - k][j] <= 10 && niveau.grille[i - k][j] > 5)
+                            detruireLigne = true;
+                            
+                        if(niveau.grille[i - k][j] > 10)
+                            noterColonnes(i - k, niveau.tailleY, niveau.tailleY);
+                    }
+                    
+                    if(detruireLigne)
+                    {
+                        noterLignes(niveau.tailleX, j, niveau.tailleX);
+                        detruireLigne = false;
+                    }
+                    
+                    if(nbCasesAlignees >= 4)
+                    {
+                        // Création d'une case combo verticale car l'alignement est horizontal
+                        niveau.grille[i - 2][j] = niveau.grille[i - 2][j] + 10;
+                        grilleDeDestruction[i - 2][j] = false;
+                    }
+                    
                     pasDeCasesADetruire = false;
                 }
             }
@@ -448,29 +566,87 @@
         for(i = 0; i < niveau.tailleX; i++)
         {
             couleurTemp = niveau.grille[i][0];
+            if(couleurTemp > 10)
+                couleurTemp -= 10;
+            if(couleurTemp > 5)
+                couleurTemp -= 5;
             nbCasesAlignees = 1; // Le nombre de cases alignées est égal à 1 en début de ligne
 
-            /** Parcours des lignes **/
+            /** Parcours des colonnes **/
             for(j = 1; j < niveau.tailleY; j++)
             {
-                if(couleurTemp == niveau.grille[i][j]) // Si la couleur temporaire est la même dans cette case, on incrémente nbCasesAlignees
+                if(couleurTemp == niveau.grille[i][j] || couleurTemp == niveau.grille[i][j] - 5 || couleurTemp == niveau.grille[i][j] - 10) // Si la couleur temporaire est la même dans cette case, on incrémente nbCasesAlignees
                     nbCasesAlignees++;
                 else if(nbCasesAlignees >= 3 && couleurTemp != 0) // Si la couleur n'est pas la même mais qu'on a un alignement, on note dans le deuxième tableau
                 {
                     noterColonnes(i, j, nbCasesAlignees);
+                    
+                    for(k = 1; k <= nbCasesAlignees; k++)
+                    {
+                        if(niveau.grille[i][j - k] <= 10 && niveau.grille[i][j - k] > 5)
+                            noterLignes(niveau.tailleX, j - k, niveau.tailleX);
+                            
+                        if(niveau.grille[i][j - k] > 10)
+                            detruireColonne = true;
+                    }
+                    
+                    if(detruireColonne)
+                    {
+                        noterColonnes(i, niveau.tailleY, niveau.tailleY);
+                        detruireColonne = false;
+                    }
+                    
+                    if(nbCasesAlignees >= 4)
+                    {
+                        // Création d'une case combo horizontale car l'alignement est vertical
+                        niveau.grille[i][j - 2] = niveau.grille[i][j - 2] + 5;
+                        grilleDeDestruction[i][j - 2] = false;
+                    }
+                    
                     nbCasesAlignees = 1;
                     couleurTemp = niveau.grille[i][j];
+                    if(couleurTemp > 10)
+                        couleurTemp -= 10;
+                    if(couleurTemp > 5)
+                        couleurTemp -= 5;
                     pasDeCasesADetruire = false;
                 }
                 else
                 {
                     nbCasesAlignees = 1;
                     couleurTemp = niveau.grille[i][j];
+                    if(couleurTemp > 10)
+                        couleurTemp -= 10;
+                    if(couleurTemp > 5)
+                        couleurTemp -= 5;
                 }
 
                 if(j == niveau.tailleY - 1 && nbCasesAlignees >= 3 && couleurTemp != 0)
                 {
                     noterColonnes(i, j+1, nbCasesAlignees);
+                    
+                    for(k = 1; k <= nbCasesAlignees; k++)
+                    {
+                        if(niveau.grille[i][j - k] <= 10 && niveau.grille[i][j - k] > 5)
+                            noterLignes(niveau.tailleX, j - k, niveau.tailleX);
+                            
+                        if(niveau.grille[i][j - k] > 10)
+                            detruireColonne = true;
+                    }
+                    
+                    if(detruireColonne)
+                    {
+                        noterColonnes(i, niveau.tailleY, niveau.tailleY);
+                        detruireColonne = false;
+                    }
+                    
+                    if(nbCasesAlignees >= 4)
+                    {
+                        // Création d'une case combo horizontale car l'alignement est vertical
+                        niveau.grille[i][j - 2] = niveau.grille[i][j - 2] + 5;
+                        grilleDeDestruction[i][j - 2] = false;
+                    }
+                    
                     pasDeCasesADetruire = false;
                 }
             }
@@ -483,7 +659,8 @@
     {
         for(k = i - nbCasesAlignees; k < i; k++) // On parcourt les cases à noter, mais on ne passe pas quand k == i car i n'est pas dans l'alignement
         {
-            grilleDeDestruction[k][j] = true;
+            if(niveau.grille[k][j] != 0) // Si la case n'est pas une case inutilisable
+                grilleDeDestruction[k][j] = true;
         }
     }
     
@@ -491,7 +668,8 @@
     {
         for(k = j - nbCasesAlignees; k < j; k++)
         {
-            grilleDeDestruction[i][k] = true;
+            if(niveau.grille[k][j] != 0)
+                grilleDeDestruction[i][k] = true;
         }
     }
 
@@ -564,6 +742,18 @@
         
         creerGrilleDeDestruction();
         remplirGrilleDeDestruction();
+                   
+        // On (re)initialise niveau pour quand on clique sur le bouton nouvelle partie
+        niveau.x = 0;
+        niveau.y = 0;
+        niveau.tailleX = 10;
+        niveau.tailleY = 10;
+        niveau.tailleCase = 60;
+        niveau.finDuJeu = 0;
+        niveau.nbCoups = 0;
+        niveau.score = 0;
+        niveau.caseADeplacer.x = -1;
+        niveau.caseADeplacer.y = -1;
 
         // Pas de combi au départ :
         while(!detecter())
@@ -757,13 +947,13 @@
 
     <canvas id="cvs" width="600" height="600" style="margin: 10px auto; border: solid 1px #000;"></canvas>
     
-   <button type="new">
+   <button type="new" onclick="init()">
 		<img src="images/newgameCC.png"
 		    width="150" height="50"> 
 	</button>
 
 	 
-<p style="border: solid 5px purple; border-radius: 15px; width: 150px; height: 180px; text-align: center; padding-top: 10px;">Coups Restants <br><span style="display: block; margin-top: 60px;" id="coups">10</span></p>
+    <p style="border: solid 5px purple; border-radius: 15px; width: 150px; height: 180px; text-align: center; padding-top: 10px;">Coups Restants <br><span style="display: block; margin-top: 60px;" id="coups">10</span></p>
 
 	<p style="border: solid 5px purple; border-radius: 15px; width: 150px; height: 180px; text-align: center; padding-top: 10px;">Score <br><span style="display: block; margin-top: 60px;" id="score"></span></p>	
 	
