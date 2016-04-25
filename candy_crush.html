@@ -509,7 +509,11 @@
                     if(nbCasesAlignees >= 4)
                     {
                         // Création d'une case combo verticale car l'alignement est horizontal
-                        niveau.grille[i - 2][j] = niveau.grille[i - 2][j] + 10;
+                        if(niveau.grille[i - 2][j] <= 5)
+                            niveau.grille[i - 2][j] = niveau.grille[i - 2][j] + 10;
+                        else if(niveau.grille[i - 2][j] <= 10)
+                            niveau.grille[i - 2][j] = niveau.grille[i - 2][j] + 5;
+
                         grilleDeDestruction[i - 2][j] = false;
                     }
                     
@@ -554,7 +558,10 @@
                     if(nbCasesAlignees >= 4)
                     {
                         // Création d'une case combo verticale car l'alignement est horizontal
-                        niveau.grille[i - 2][j] = niveau.grille[i - 2][j] + 10;
+                        if(niveau.grille[i - 2][j] <= 5)
+                            niveau.grille[i - 2][j] = niveau.grille[i - 2][j] + 10;
+                        else if(niveau.grille[i - 2][j] <= 10)
+                            niveau.grille[i - 2][j] = niveau.grille[i - 2][j] + 5;
                         grilleDeDestruction[i - 2][j] = false;
                     }
                     
@@ -599,7 +606,11 @@
                     if(nbCasesAlignees >= 4)
                     {
                         // Création d'une case combo horizontale car l'alignement est vertical
-                        niveau.grille[i][j - 2] = niveau.grille[i][j - 2] + 5;
+                        if(niveau.grille[i][j - 2] <= 5)
+                            niveau.grille[i][j - 2] = niveau.grille[i][j - 2] + 10;
+                        else if(niveau.grille[i][j - 2] > 10)
+                            niveau.grille[i][j - 2] = niveau.grille[i][j - 2] - 5;
+
                         grilleDeDestruction[i][j - 2] = false;
                     }
                     
@@ -643,7 +654,11 @@
                     if(nbCasesAlignees >= 4)
                     {
                         // Création d'une case combo horizontale car l'alignement est vertical
-                        niveau.grille[i][j - 2] = niveau.grille[i][j - 2] + 5;
+                        if(niveau.grille[i][j - 2] <= 5)
+                            niveau.grille[i][j - 2] = niveau.grille[i][j - 2] + 10;
+                        else if(niveau.grille[i][j - 2] > 10)
+                            niveau.grille[i][j - 2] = niveau.grille[i][j - 2] - 5;
+                        
                         grilleDeDestruction[i][j - 2] = false;
                     }
                     
@@ -682,8 +697,11 @@
             {
                 if(grilleDeDestruction[i][j] == true)
                 {
-                    niveau.grille[i][j] = -1;
-                    niveau.score = niveau.score + 60; // On augmente de 60 a chaque case detruite
+                    if(niveau.grille[i][j] != 0) // On ne détruit pas les cases inutilisables
+                    {
+                        niveau.grille[i][j] = -1;
+                        niveau.score = niveau.score + 60; // On augmente de 60 a chaque case detruite
+                    }
                     grilleDeDestruction[i][j] = false; // On en profite pour réinitialiser la grille servant pour la destruction
                 }
             }
@@ -776,7 +794,8 @@
         render();
         requestAnimationFrame(boucleDeJeu);
     }
-    var test;
+    var inter;
+    var enCours = false;
     /**
      *  Mise à jour de l'état du jeu
      *  @param  d   date courante
@@ -784,7 +803,7 @@
     update = function(d) {
         if(estValide(caseCliquee(clic)) && niveau.finDuJeu == 0)
         {
-            if(sontAdjacentes(niveau.caseADeplacer, caseCliquee(clic)))
+            if(sontAdjacentes(niveau.caseADeplacer, caseCliquee(clic)) && !enCours)
             {
                 console.log("On échange !");
                 echanger(niveau.caseADeplacer, caseCliquee(clic));
@@ -796,7 +815,8 @@
                 }
                 else
                 {
-                    test = setInterval(function()
+                    enCours = true; // Pour ne pas jouer de coups tant qu'un autre est en cours
+                    inter = setInterval(function()
                     {
                         detruire();
                         remplacer();
@@ -804,8 +824,9 @@
                         
                         if(detecter())
                         {
-                            clearInterval(test);
+                            clearInterval(inter);
                             niveau.nbCoups++;
+                            enCours = false;
                         }
                     }, 1000);
                     
@@ -834,7 +855,7 @@
         
         if(niveau.nbCoups >= 10 && niveau.score < 6000)
             niveau.finDuJeu = 2;
-        else if(niveau.score >= 6000)
+        else if(niveau.nbCoups >= 10 && niveau.score >= 6000)
             niveau.finDuJeu = 1;
     }
     
