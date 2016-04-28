@@ -818,6 +818,31 @@
     }
     var inter;
     var enCours = false;
+
+    miseAJour = function()
+    {
+        enCours = true; // Pour ne pas jouer de coups tant qu'un autre est en cours
+        inter = setInterval(function()
+        {
+            detruire();
+            remplacer();
+            detecter();
+            
+            if(detecter())
+            {
+                clearInterval(inter);
+                niveau.nbCoups++;
+                enCours = false;
+            }
+        }, 1000);
+        
+        /*while(!detecter())
+        {
+            detruire();
+            remplacer();
+        }*/
+    }
+
     /**
      *  Mise à jour de l'état du jeu
      *  @param  d   date courante
@@ -840,6 +865,12 @@
                             grilleDeDestruction[i][j] = true;
                         }
                     }
+                    miseAJour();
+                    // Pour ne pas qu'il y ait de cases cliquee apres un coup reussi
+                    niveau.caseADeplacer.x = -1;
+                    niveau.caseADeplacer.y = -1;
+                    clic.x = -1;
+                    clic.y = -1;
                 }
                 else if(niveau.grille[niveau.caseADeplacer.x][niveau.caseADeplacer.y] == 16 || niveau.grille[caseCliquee(clic).x][caseCliquee(clic).y] == 16)
                 {
@@ -848,9 +879,15 @@
                     // Couleur a detruire
                     var couleurDet;
                     if(niveau.grille[niveau.caseADeplacer.x][niveau.caseADeplacer.y] != 16)
+                    {
                         couleurDet = niveau.grille[niveau.caseADeplacer.x][niveau.caseADeplacer.y];
+                        grilleDeDestruction[caseCliquee(clic).x][caseCliquee(clic).y] = true;
+                    }
                     else
+                    {
                         couleurDet = niveau.grille[caseCliquee(clic).x][caseCliquee(clic).y];
+                        grilleDeDestruction[caseCliquee(clic).x][caseCliquee(clic).y] = true;
+                    }
 
                     if(couleurDet > 10)
                         couleurDet -= 10;
@@ -865,6 +902,13 @@
                                 grilleDeDestruction[i][j] = true;
                         }
                     }
+
+                    miseAJour();
+                    // Pour ne pas qu'il y ait de cases cliquee apres un coup reussi
+                    niveau.caseADeplacer.x = -1;
+                    niveau.caseADeplacer.y = -1;
+                    clic.x = -1;
+                    clic.y = -1;
                 }
 
                 if(detecter()) // Si il n'y a pas de cases a detruire
@@ -872,42 +916,20 @@
                     echanger(niveau.caseADeplacer, caseCliquee(clic)); // On reechange
                     niveau.caseADeplacer = caseCliquee(clic);
                 }
+                else // Si il y a des cases a detruire
+                {
+                    miseAJour();
+                    // Pour ne pas qu'il y ait de cases cliquee apres un coup reussi
+                    niveau.caseADeplacer.x = -1;
+                    niveau.caseADeplacer.y = -1;
+                    clic.x = -1;
+                    clic.y = -1;
+                }
                 
             }
             else
             {
                 niveau.caseADeplacer = caseCliquee(clic);
-            }
-
-            if(!detecter())
-            {
-                enCours = true; // Pour ne pas jouer de coups tant qu'un autre est en cours
-                inter = setInterval(function()
-                {
-                    detruire();
-                    remplacer();
-                    detecter();
-                    
-                    if(detecter())
-                    {
-                        clearInterval(inter);
-                        niveau.nbCoups++;
-                        enCours = false;
-                    }
-                }, 1000);
-                
-                /*while(!detecter())
-                {
-                    detruire();
-                    remplacer();
-                }*/
-                
-                
-                // Pour ne pas qu'il y ait de cases cliquee apres un coup reussi
-                niveau.caseADeplacer.x = -1;
-                niveau.caseADeplacer.y = -1;
-                clic.x = -1;
-                clic.y = -1;
             }
         }
         
