@@ -20,6 +20,9 @@
                    caseADeplacer: { x: -1, y: -1 } };
 
     // Bonbons
+    var combo = new Image();
+    combo.src = 'images/Combo.png';
+
     var blue = new Image();
     blue.src = 'images/Blue.png';
     var blueComboHoriz = new Image();
@@ -443,6 +446,9 @@
             case 15:
                 context.drawImage(yellowComboVert, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
                 break;
+            case 16:
+                context.drawImage(combo, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
+                break;
             case undefined:
                 context.fillStyle="pink";
                 break;
@@ -498,7 +504,7 @@
                         detruireLigne = false;
                     }
                     
-                    if(nbCasesAlignees >= 4)
+                    if(nbCasesAlignees == 4)
                     {
                         // Création d'une case combo verticale car l'alignement est horizontal
                         if(niveau.grille[i - 2][j] <= 5)
@@ -507,6 +513,12 @@
                             niveau.grille[i - 2][j] = niveau.grille[i - 2][j] + 5;
 
                         grilleDeDestruction[i - 2][j] = false;
+                    }
+
+                    if(nbCasesAlignees == 5)
+                    {
+                        niveau.grille[i - 3][j] = 16;
+                        grilleDeDestruction[i - 3][j] = false;
                     }
                     
                     nbCasesAlignees = 1;
@@ -547,7 +559,7 @@
                         detruireLigne = false;
                     }
                     
-                    if(nbCasesAlignees >= 4)
+                    if(nbCasesAlignees == 4)
                     {
                         // Création d'une case combo verticale car l'alignement est horizontal
                         if(niveau.grille[i - 2][j] <= 5)
@@ -555,6 +567,12 @@
                         else if(niveau.grille[i - 2][j] <= 10)
                             niveau.grille[i - 2][j] = niveau.grille[i - 2][j] + 5;
                         grilleDeDestruction[i - 2][j] = false;
+                    }
+
+                    if(nbCasesAlignees == 5)
+                    {
+                        niveau.grille[i - 3][j] = 16;
+                        grilleDeDestruction[i - 3][j] = false;
                     }
                     
                     pasDeCasesADetruire = false;
@@ -595,7 +613,7 @@
                         detruireColonne = false;
                     }
                     
-                    if(nbCasesAlignees >= 4)
+                    if(nbCasesAlignees == 4)
                     {
                         // Création d'une case combo horizontale car l'alignement est vertical
                         if(niveau.grille[i][j - 2] <= 5)
@@ -604,6 +622,12 @@
                             niveau.grille[i][j - 2] = niveau.grille[i][j - 2] - 5;
 
                         grilleDeDestruction[i][j - 2] = false;
+                    }
+
+                    if(nbCasesAlignees == 5)
+                    {
+                        niveau.grille[i][j - 3] = 16;
+                        grilleDeDestruction[i][j - 3] = false;
                     }
                     
                     nbCasesAlignees = 1;
@@ -643,7 +667,7 @@
                         detruireColonne = false;
                     }
                     
-                    if(nbCasesAlignees >= 4)
+                    if(nbCasesAlignees == 4)
                     {
                         // Création d'une case combo horizontale car l'alignement est vertical
                         if(niveau.grille[i][j - 2] <= 5)
@@ -652,6 +676,12 @@
                             niveau.grille[i][j - 2] = niveau.grille[i][j - 2] - 5;
                         
                         grilleDeDestruction[i][j - 2] = false;
+                    }
+
+                    if(nbCasesAlignees == 5)
+                    {
+                        niveau.grille[i][j - 3] = 16;
+                        grilleDeDestruction[i][j - 3] = false;
                     }
                     
                     pasDeCasesADetruire = false;
@@ -800,45 +830,84 @@
                 console.log("On échange !");
                 echanger(niveau.caseADeplacer, caseCliquee(clic));
                 
+                // Si les deux cases sont des combos, on détruit toutes les cases valides de la grille
+                if(niveau.grille[niveau.caseADeplacer.x][niveau.caseADeplacer.y] == 16 && niveau.grille[niveau.caseADeplacer.x][niveau.caseADeplacer.y] == niveau.grille[caseCliquee(clic).x][caseCliquee(clic).y])
+                {
+                    for(j = 0; j < niveau.tailleY; j++)
+                    {
+                        for(i = 0; i < niveau.tailleX; i++)
+                        {
+                            grilleDeDestruction[i][j] = true;
+                        }
+                    }
+                }
+                else if(niveau.grille[niveau.caseADeplacer.x][niveau.caseADeplacer.y] == 16 || niveau.grille[caseCliquee(clic).x][caseCliquee(clic).y] == 16)
+                {
+                    // Si une des cases est un combo, on detruit toutes les cases de la couleur de l'autre
+
+                    // Couleur a detruire
+                    var couleurDet;
+                    if(niveau.grille[niveau.caseADeplacer.x][niveau.caseADeplacer.y] != 16)
+                        couleurDet = niveau.grille[niveau.caseADeplacer.x][niveau.caseADeplacer.y];
+                    else
+                        couleurDet = niveau.grille[caseCliquee(clic).x][caseCliquee(clic).y];
+
+                    if(couleurDet > 10)
+                        couleurDet -= 10;
+                    if(couleurDet > 5)
+                        couleurDet -= 5;
+
+                    for(j = 0; j < niveau.tailleY; j++)
+                    {
+                        for(i = 0; i < niveau.tailleX; i++)
+                        {
+                            if(niveau.grille[i][j] == couleurDet || niveau.grille[i][j] == couleurDet + 5 || niveau.grille[i][j] == couleurDet + 10)
+                                grilleDeDestruction[i][j] = true;
+                        }
+                    }
+                }
+
                 if(detecter()) // Si il n'y a pas de cases a detruire
                 {
                     echanger(niveau.caseADeplacer, caseCliquee(clic)); // On reechange
                     niveau.caseADeplacer = caseCliquee(clic);
                 }
-                else
-                {
-                    enCours = true; // Pour ne pas jouer de coups tant qu'un autre est en cours
-                    inter = setInterval(function()
-                    {
-                        detruire();
-                        remplacer();
-                        detecter();
-                        
-                        if(detecter())
-                        {
-                            clearInterval(inter);
-                            niveau.nbCoups++;
-                            enCours = false;
-                        }
-                    }, 1000);
-                    
-                    /*while(!detecter())
-                    {
-                        detruire();
-                        remplacer();
-                    }*/
-                    
-                    
-                    // Pour ne pas qu'il y ait de cases cliquee apres un coup reussi
-                    niveau.caseADeplacer.x = -1;
-                    niveau.caseADeplacer.y = -1;
-                    clic.x = -1;
-                    clic.y = -1;
-                }
+                
             }
             else
             {
                 niveau.caseADeplacer = caseCliquee(clic);
+            }
+
+            if(!detecter())
+            {
+                enCours = true; // Pour ne pas jouer de coups tant qu'un autre est en cours
+                inter = setInterval(function()
+                {
+                    detruire();
+                    remplacer();
+                    detecter();
+                    
+                    if(detecter())
+                    {
+                        clearInterval(inter);
+                        niveau.nbCoups++;
+                        enCours = false;
+                    }
+                }, 1000);
+                
+                /*while(!detecter())
+                {
+                    detruire();
+                    remplacer();
+                }*/
+                
+                
+                // Pour ne pas qu'il y ait de cases cliquee apres un coup reussi
+                niveau.caseADeplacer.x = -1;
+                niveau.caseADeplacer.y = -1;
+                clic.x = -1;
+                clic.y = -1;
             }
         }
         
