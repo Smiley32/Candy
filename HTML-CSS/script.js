@@ -27,14 +27,12 @@
             if (width >= fin) {
                 clearInterval(id);
             } 
-            else if(width >= 100)
-            {
-                width = 100;
-                elem.style.width = width + '%';
-                document.getElementById("label").innerHTML = (width|0) + '%';
-                clearInterval(id);
-            }
             else {
+                if(width >= 100)
+                {
+                    width = 100;
+                    clearInterval(id);
+                }
                 width++;
                 elem.style.width = width + '%';
                 document.getElementById("label").innerHTML = (width|0) + '%';
