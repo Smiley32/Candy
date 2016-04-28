@@ -26,7 +26,15 @@
         function frame() {
             if (width >= fin) {
                 clearInterval(id);
-            } else {
+            } 
+            else if(width >= 100)
+            {
+                width = 100;
+                elem.style.width = width + '%';
+                document.getElementById("label").innerHTML = (width|0) + '%';
+                clearInterval(id);
+            }
+            else {
                 width++;
                 elem.style.width = width + '%';
                 document.getElementById("label").innerHTML = (width|0) + '%';
