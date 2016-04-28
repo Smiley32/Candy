@@ -18,7 +18,22 @@
                    nbCoups: 0,     // Nombre de coups
                    score: 0,       // Score du joueur
                    caseADeplacer: { x: -1, y: -1 } };
-
+    
+    function move() {
+		var elem = document.getElementById("bar");
+		var width = niveau.score;
+		var id = setInterval(frame, 10);
+		function frame() {
+			if (width >= 100) {
+				clearInterval(id);
+			} else {
+				width++;
+				elem.style.width = width + '%';
+				document.getElementById("label").innerHTML = width * 1 + '%';
+			}
+		}
+	}	
+    
     // Bonbons
     var combo = new Image();
     combo.src = 'images/Combo.png';
