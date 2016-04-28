@@ -19,20 +19,21 @@
                    score: 0,       // Score du joueur
                    caseADeplacer: { x: -1, y: -1 } };
     
-    function move() {
-		var elem = document.getElementById("bar");
-		var width = niveau.score;
-		var id = setInterval(frame, 10);
-		function frame() {
-			if (width >= 100) {
-				clearInterval(id);
-			} else {
-				width++;
-				elem.style.width = width + '%';
-				document.getElementById("label").innerHTML = width * 1 + '%';
-			}
-		}
-	}	
+    function move(fin) {
+        var elem = document.getElementById("bar");
+        var width = scorePrec/6000*100;
+        var id = setInterval(frame, 25);
+        function frame() {
+            if (width >= fin) {
+                clearInterval(id);
+            } else {
+                width++;
+                elem.style.width = width + '%';
+                document.getElementById("label").innerHTML = (width|0) + '%';
+            }
+        }
+        scorePrec = niveau.score;
+    }   
     
     // Bonbons
     var combo = new Image();
@@ -728,6 +729,7 @@
     // Destruction
     detruire = function()
     {
+
         for(j = 0; j < niveau.tailleY; j++)
         {
             for(i = 0; i < niveau.tailleX; i++)
@@ -858,17 +860,22 @@
         }*/
     }
 
+    var scorePrec = 0;
+
     /**
      *  Mise à jour de l'état du jeu
      *  @param  d   date courante
      */
     update = function(d) {
+        
         if(estValide(caseCliquee(clic)) && niveau.finDuJeu == 0)
         {
             if(sontAdjacentes(niveau.caseADeplacer, caseCliquee(clic)) && !enCours)
             {
+
                 console.log("On échange !");
-                echanger(niveau.caseADeplacer, caseCliquee(clic));
+                if(estValide(niveau.caseADeplacer))
+                    echanger(niveau.caseADeplacer, caseCliquee(clic));
                 
                 // Si les deux cases sont des combos, on détruit toutes les cases valides de la grille
                 if(niveau.grille[niveau.caseADeplacer.x][niveau.caseADeplacer.y] == 16 && niveau.grille[niveau.caseADeplacer.x][niveau.caseADeplacer.y] == niveau.grille[caseCliquee(clic).x][caseCliquee(clic).y])
@@ -928,7 +935,8 @@
 
                 if(detecter()) // Si il n'y a pas de cases a detruire
                 {
-                    echanger(niveau.caseADeplacer, caseCliquee(clic)); // On reechange
+                    if(estValide(niveau.caseADeplacer))
+                        echanger(niveau.caseADeplacer, caseCliquee(clic)); // On reechange
                     niveau.caseADeplacer = caseCliquee(clic);
                 }
                 else // Si il y a des cases a detruire
@@ -950,7 +958,10 @@
         
         document.getElementById("coups").innerHTML = 10 - niveau.nbCoups;
         document.getElementById("score").innerHTML = niveau.score;
-        
+        // document.getElementById("bar").style.width = (niveau.score/6000)*100 + "%";
+        // document.getElementById("label").innerHTML = (niveau.score/6000)*100 + "%";
+        move((niveau.score/6000)*100);
+
         if(niveau.nbCoups >= 10 && niveau.score < 6000)
             niveau.finDuJeu = 2;
         else if(niveau.nbCoups >= 10 && niveau.score >= 6000)
