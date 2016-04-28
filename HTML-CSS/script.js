@@ -28,12 +28,12 @@
                 clearInterval(id);
             } 
             else {
+                width++;
                 if(width >= 100)
                 {
                     width = 100;
                     clearInterval(id);
                 }
-                width++;
                 elem.style.width = width + '%';
                 document.getElementById("label").innerHTML = (width|0) + '%';
             }
