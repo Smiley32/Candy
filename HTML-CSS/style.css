@@ -159,7 +159,8 @@ h1 {
     font-size: 25px;
     letter-spacing: .10em;
     text-align: center;
-	border-radius: 50px;
+	border-bottom-left-radius: 50px;
+	border-bottom-right-radius: 50px;
 	width: 50%;
 	margin: auto;
 }
@@ -185,7 +186,7 @@ h2 {
 
 #cvs {
 	border: solid 1px black;
-	background-color: grey;
+	
 	display: block;
 }
 

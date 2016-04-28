@@ -599,7 +599,7 @@
                     {
                         // Création d'une case combo horizontale car l'alignement est vertical
                         if(niveau.grille[i][j - 2] <= 5)
-                            niveau.grille[i][j - 2] = niveau.grille[i][j - 2] + 10;
+                            niveau.grille[i][j - 2] = niveau.grille[i][j - 2] + 5;
                         else if(niveau.grille[i][j - 2] > 10)
                             niveau.grille[i][j - 2] = niveau.grille[i][j - 2] - 5;
 
