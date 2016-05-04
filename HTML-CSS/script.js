@@ -19,6 +19,9 @@
                    score: 0,       // Score du joueur
                    caseADeplacer: { x: -1, y: -1 } };
     
+    // Pour afficher correctement la barre de score
+    var scorePrec = 0;
+
     function move(fin) {
         var elem = document.getElementById("bar");
         var width = scorePrec/6000*100;
@@ -79,7 +82,11 @@
     yellowComboHoriz.src = 'images/ComboYellowHoriz.png';
     var yellowComboVert = new Image();
     yellowComboVert.src = 'images/ComboYellowVert.png';
-        
+    
+    /**
+     * Retourne la case qui est cliquee
+     * Si aucune case n'est cliquee (souris en dehors de la grille), le retour est {-1, -1}
+     */
     caseCliquee = function(pos)
     {
         // on calcule coordonnées de la tuile
@@ -93,6 +100,9 @@
             return{ x: -1, y: -1 };
     }
 
+    /**
+     * Retourne si les cases sont cotes a cotes
+     */
     sontAdjacentes = function(case1, case2)
     {
         //on vérifie si la tuile est sur une case adjacente (à côté) de la tuile selectionnée
@@ -102,7 +112,9 @@
             return false;
     }
 
-
+    /**
+     * Echange les valeurs de deux cases
+     */
     echanger = function(case1, case2)
     {
         var temp = niveau.grille[case1.x][case1.y];
@@ -307,6 +319,9 @@
 
     var tailleCase = 25;
 
+    /**
+     * Retourne si la case est valide ou non
+     */
     estValide = function( cs )
     {
         if( cs.x >= 0 && cs.x < niveau.tailleX && cs.y >= 0 && cs.y < niveau.tailleY && niveau.grille[cs.x][cs.y] != 0 && niveau.grille[cs.x][cs.y] != -1)
@@ -315,6 +330,9 @@
             return false;
     }
     
+    /**
+     * Creation de la grille de destruction
+     */
     creerGrilleDeDestruction = function()
     {
         for(i = 0; i < niveau.tailleX; i++)
@@ -323,6 +341,9 @@
         }
     }
     
+    /**
+     * Remplit la grille de destruction par des valeurs fausses
+     */
     remplirGrilleDeDestruction = function()
     {
         for(j = 0; j < niveau.tailleY; j++)
@@ -334,6 +355,9 @@
         }
     }
 
+    /**
+     * Creer la grille principale
+     */
     creerGrille = function()
     {
         for(i = 0; i < niveau.tailleX; i++)
@@ -342,7 +366,6 @@
         }
     }
 
-    // A MODIFIER
     /**
      *  Remplissage de la grille
      */
@@ -359,11 +382,17 @@
         }
     }
     
+    /**
+     * Affichage d'un texte centre
+     */
     drawCenterText = function(text, x, y, width) {
         var textDim = context.measureText(text);
         context.fillText(text, x + (width - textDim.width) / 2, y);
     }
 
+    /**
+     * Affichage de la grille (lignes verticales et horizontales)
+     */
     affichageGrille = function()
     {
         // Lignes verticales
@@ -378,6 +407,9 @@
         }
     }
     
+    /**
+     * affichage des cases a detruire
+     */
     affichageCasesADetruire = function()
     {
         for(j = 0; j < niveau.tailleY; j++)
@@ -393,6 +425,9 @@
         }
     }
 
+    /**
+     * Affichage des bonbons
+     */
     affichageBonbons = function()
     {
         for(j = 0; j < niveau.tailleY; j++)
@@ -405,12 +440,18 @@
         }
     }
 
+    /**
+     * Affichage de la case selectionnee
+     */
     affichageCaseSelec = function(caseSelec)
     {
         context.fillStyle="rgba(0, 0, 0, 0.3)";
         context.fillRect(niveau.tailleCase*caseSelec.x + niveau.x, niveau.tailleCase*caseSelec.y + niveau.y, niveau.tailleCase, niveau.tailleCase);
     }
     
+    /**
+     * Tracage des bonbons (les images)
+     */
     couleurBonbon = function(numCase)
     {
         switch(numCase)
@@ -480,11 +521,16 @@
         }
     }
 
+    /**
+     * Petite fonction aleatoire
+     */
     rand = function(mini, maxi) {
         return (Math.random()*(maxi-mini+1))+mini;
     }
     
-    // Detection
+    /**
+     * Detection des bonbons a detruire
+     */
     detecter = function()
     {
         var pasDeCasesADetruire = true;
@@ -564,7 +610,8 @@
 
                 if(i == niveau.tailleX - 1 && nbCasesAlignees >= 3 && couleurTemp != 0)
                 {
-                    noterLignes(i+1, j, nbCasesAlignees);
+                    i++;
+                    noterLignes(i, j, nbCasesAlignees);
                     
                     for(k = 1; k <= nbCasesAlignees; k++)
                     {
@@ -672,7 +719,8 @@
 
                 if(j == niveau.tailleY - 1 && nbCasesAlignees >= 3 && couleurTemp != 0)
                 {
-                    noterColonnes(i, j+1, nbCasesAlignees);
+                    j++;
+                    noterColonnes(i, j, nbCasesAlignees);
                     
                     for(k = 1; k <= nbCasesAlignees; k++)
                     {
@@ -714,6 +762,9 @@
         return pasDeCasesADetruire; // Vrai si il n'y a plus de cases a detruire
     }
     
+    /**
+     * Noter un certain nombre de cases pour les detruires
+     */
     noterLignes = function(i, j, nbCasesAlignees)
     {
         for(k = i - nbCasesAlignees; k < i; k++) // On parcourt les cases à noter, mais on ne passe pas quand k == i car i n'est pas dans l'alignement
@@ -723,6 +774,9 @@
         }
     }
     
+    /**
+     * Noter un certain nombre de cases pour les detruires
+     */
     noterColonnes = function(i, j, nbCasesAlignees)
     {
         for(k = j - nbCasesAlignees; k < j; k++)
@@ -732,7 +786,9 @@
         }
     }
 
-    // Destruction
+    /**
+     * Destruction des cases precedement notees
+     */
     detruire = function()
     {
 
@@ -753,7 +809,9 @@
         }
     }
     
-    // Remplacement
+    /**
+     * On remplace les cases detruites par d'autres après les avoir fait remonter (on a descendu les cases du dessous)
+     */
     remplacer = function()
     {
         var j;
@@ -834,14 +892,21 @@
         boucleDeJeu();
     }
     
+    /**
+     * Mise a jour du jeu puis affichage
+     */
     boucleDeJeu = function() {
         update(Date.now());  
         render();
         requestAnimationFrame(boucleDeJeu);
     }
     var inter;
+    // Si un coup est en cours
     var enCours = false;
 
+    /**
+     * Mise a jour du processus de detection, destruction, remplacement
+     */
     miseAJour = function()
     {
         enCours = true; // Pour ne pas jouer de coups tant qu'un autre est en cours
@@ -851,22 +916,36 @@
             remplacer();
             detecter();
             
-            if(detecter())
+            if(detecter() && pasDeCasesDetruites())
             {
                 clearInterval(inter);
                 niveau.nbCoups++;
                 enCours = false;
             }
         }, 1000);
-        
-        /*while(!detecter())
-        {
-            detruire();
-            remplacer();
-        }*/
     }
 
-    var scorePrec = 0;
+    /**
+     * Verifie qu'il n'y a pas de cases detruites
+     */
+    pasDeCasesDetruites = function()
+    {
+        var ret = true;
+        var i = 0;
+        var j = 0;
+        while(i < niveau.tailleX && ret)
+        {
+            j = 0;
+            while(j < niveau.tailleY && ret)
+            {
+                if(grilleDeDestruction)
+                    ret = false;
+                j++;
+            }
+            i++;
+        }
+        return ret;
+    }
 
     /**
      *  Mise à jour de l'état du jeu
@@ -968,6 +1047,7 @@
         // document.getElementById("label").innerHTML = (niveau.score/6000)*100 + "%";
         move((niveau.score/6000)*100);
 
+        // Declaration de la victoire ou de la perte apres les 10 coups
         if(niveau.nbCoups >= 10 && niveau.score < 6000)
             niveau.finDuJeu = 2;
         else if(niveau.nbCoups >= 10 && niveau.score >= 6000)
@@ -982,17 +1062,16 @@
         // effacement de l'écran
         context.clearRect(0, 0, context.width, context.height);
 
-        context.fillStyle="blue";
-
+        context.fillStyle = "black";
         affichageGrille();
 
-        context.fillStyle="pink";
         affichageBonbons();
         affichageCasesADetruire();
 
         if(niveau.caseADeplacer.x != -1 && niveau.caseADeplacer.y != -1)
             affichageCaseSelec(niveau.caseADeplacer);
         
+        // Affichage des messages de fin du jeu (victoire ou perte)
         if (niveau.finDuJeu != 0) {
             context.fillStyle = "rgba(0, 0, 0, 0.8)";
             context.fillRect(niveau.x, niveau.y, niveau.tailleCase * niveau.tailleX, niveau.tailleCase * niveau.tailleY);
@@ -1017,26 +1096,7 @@
         // pratique pour connaître les keyCode des touches du clavier :
         //  --> http://www.cambiaresearch.com/articles/15/javascript-key-codes
 
-        console.log(event.keyCode);
-        switch(event.keyCode)
-        {
-            case 38:
-            case 90:
-                touche.haut = true;
-                break;
-            case 37:
-            case 81:
-                touche.gauche = true;
-                break;
-            case 39:
-            case 68:
-                touche.droite = true;
-                break;
-            case 40:
-            case 83:
-                touche.bas = true;
-                break;
-        }
+        // On n'utilise pas le clavier
     }
     
     /**
@@ -1044,25 +1104,7 @@
      *  Associée à l'événement "keyUp"
      */
     captureRelacheToucheClavier = function(event) {
-        switch(event.keyCode)
-        {
-            case 38:
-            case 90:
-                touche.haut = false;
-                break;
-            case 37:
-            case 81:
-                touche.gauche = false;
-                break;
-            case 39:
-            case 68:
-                touche.droite = false;
-                break;
-            case 40:
-            case 83:
-                touche.bas = false;
-                break;
-        }
+        // On n'utilise pas le clavier
     }
     
     /**
