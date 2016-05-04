@@ -916,6 +916,7 @@
      */
     miseAJour = function()
     {
+        clearInterval(inter);
         enCours = true; // Pour ne pas jouer de coups tant qu'un autre est en cours
         inter = setInterval(function()
         {
