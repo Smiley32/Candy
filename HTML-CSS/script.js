@@ -82,6 +82,9 @@
     yellowComboHoriz.src = 'images/ComboYellowHoriz.png';
     var yellowComboVert = new Image();
     yellowComboVert.src = 'images/ComboYellowVert.png';
+
+    var vide = new Image();
+    vide.src = 'images/Vide.png';
     
     /**
      * Retourne la case qui est cliquee
@@ -458,6 +461,7 @@
         {
             case 0:
                 context.fillStyle="black";
+                context.drawImage(vide, niveau.x + niveau.tailleCase*(i)+1, niveau.y + niveau.tailleCase*(j)+1, niveau.tailleCase-2, niveau.tailleCase-2);
                 break;
             case 1:
                 context.fillStyle="red";
@@ -542,10 +546,13 @@
         for(j = 0; j < niveau.tailleY; j++)
         {
             couleurTemp = niveau.grille[0][j]; // La couleur temporaire est égale à la première case de la grille
-            if(couleurTemp > 10)
-                couleurTemp -= 10;
-            if(couleurTemp > 5)
-                couleurTemp -= 5;
+            if(couleurTemp != 16)
+            {
+                if(couleurTemp > 10)
+                    couleurTemp -= 10;
+                if(couleurTemp > 5)
+                    couleurTemp -= 5;
+            }
             nbCasesAlignees = 1; // Le nombre de cases alignées est égal à 1 en début de ligne
 
             /** Parcours des lignes **/
@@ -916,7 +923,7 @@
             remplacer();
             detecter();
             
-            if(detecter() && pasDeCasesDetruites())
+            if(detecter() && !pasDeCasesDetruites())
             {
                 clearInterval(inter);
                 niveau.nbCoups++;
