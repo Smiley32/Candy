@@ -186,7 +186,7 @@ h2 {
 
 #cvs {
 	border: solid 1px black;
-	
+	background-color: rgba(0, 0, 0, 0.3);
 	display: block;
 }
 
