@@ -1201,10 +1201,8 @@ render = function()
 }
 
 gameover = function() {
-    soundWin = document.getElementbyId("soundWin");
-    soundLose = document.getElementbyId("soundLose");
-    var soundWin = "win.ogg";
-    var soundLose = "lose.mp3";
+    var soundWin = document.getElementbyId("soundWin");
+    var soundLose = document.getElementbyId("soundLose");
 
     if(niveau.finDuJeu == 1) {
         soundWin.play();
