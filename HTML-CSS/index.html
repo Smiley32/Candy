@@ -36,12 +36,13 @@
 		    <div id="bar"></div>
 		    <div id="label">0%</div>
 		</div>
-
-        <audio id="audioPlayer">
+        <audio id="soundWin" src="win.ogg" style="display: none;"></audio>
+        <audio id="soundLose" src="lose.mp3" style="display: none;"></audio>
+        <audio id="audioPlayer" autoplay>
             <source src="test.mp3">
         </audio>
         <button class="control" onclick="play('audioPlayer', this)">Play</button>
-        <button class="control" onclick="resume('audioPlayer')">Stop</button>
+        <button class="control" onclick="stop('audioPlayer')">Stop</button>
 		</main>
 		<footer>Codé par Mohamed <span class="smallcaps">Lakhal</span> et &Eacutemile <span class="smallcaps">Jeannin</span></footer>
 	</body>

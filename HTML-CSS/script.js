@@ -1155,7 +1155,7 @@ play = function(idPlayer, control) {
     }
 }
 
-resume = function(idPlayer) {
+stop = function(idPlayer) {
     var player = document.getElementById("audioPlayer");
 
     player.currentTime = 0;
@@ -1169,6 +1169,11 @@ resume = function(idPlayer) {
  */
 render = function()
 {
+    soundWin = document.getElementbyId("soundWin");
+    soundLose = document.getElementbyId("soundLose");
+    var soundWin = "win.";
+    var soundLose = "lose.";
+
     // effacement de l'écran
     context.clearRect(0, 0, context.width, context.height);
 
@@ -1185,15 +1190,18 @@ render = function()
     if (niveau.finDuJeu != 0) {
         context.fillStyle = "rgba(0, 0, 0, 0.8)";
         context.fillRect(niveau.x, niveau.y, niveau.tailleCase * niveau.tailleX, niveau.tailleCase * niveau.tailleY);
-    
+        
         context.fillStyle = "#ffffff";
         context.font = "24px Verdana";
     
-        if(niveau.finDuJeu == 1)
+        if(niveau.finDuJeu == 1) {
             drawCenterText("Tu as gagné !", niveau.x, niveau.y + (niveau.tailleCase * niveau.tailleY) / 2 + 10, niveau.tailleCase * niveau.tailleX);
-        else
+        soundWin.play();
+        }
+        else {
             drawCenterText("Tu as perdu...", niveau.x, niveau.y + (niveau.tailleCase * niveau.tailleY) / 2 + 10, niveau.tailleCase * niveau.tailleX);
-    
+        soundLose.play();
+        }
     }
 }
 
