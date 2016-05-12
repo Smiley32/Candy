@@ -1143,6 +1143,27 @@ update = function(d)
         niveau.finDuJeu = 1;
 }
 
+play = function(idPlayer, control) {
+    var player = document.getElementById("audioPlayer");
+    
+    if (player.paused) {
+        player.play();
+        control.textContent = "Pause";
+    } else {
+        player.pause();
+        control.textContent = "Play";
+    }
+}
+
+resume = function(idPlayer) {
+    var player = document.getElementById("audioPlayer");
+
+    player.currentTime = 0;
+    play.pause(); 
+}
+
+
+
 /**
  *  Fonction réalisant le rendu de l'état du jeu
  */
