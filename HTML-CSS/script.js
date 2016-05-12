@@ -803,6 +803,25 @@ remplacer = function()
         }
     }
 
+    /*if(!initEnCours)
+    {
+        var nbMoinsUn = 0;
+        for(k = 0; k < niveau.tailleX; k++)
+        {
+            nbMoinsUn = 0;
+            for(i = niveau.tailleY - 1; i > 0; i--)
+            {
+                if(niveau.grille[k][i].couleur == -1)
+                {
+                    nbMoinsUn++;
+                    niveau.grille[k][i].y == niveau.y - (niveau.tailleCase * nbMoinsUn);
+                    console.log(niveau.y - (niveau.tailleCase * nbMoinsUn));
+                }
+            }
+        }
+        console.log("fin");
+    }*/
+
     for(k = 0; k < niveau.tailleY; k++)
     {
         for(i = 0; i < niveau.tailleX; i++)
@@ -959,10 +978,6 @@ anim = function()
                 niveau.grille[i][j].y -= 10;
             else if(niveau.grille[i][j].y < niveau.tailleCase*j + niveau.y)
                 niveau.grille[i][j].y += 10;
-
-            // Si c'est un bonbon spécial, on le met direct
-            if(niveau.grille[i][j].couleur > 5)
-            	niveau.grille[i][j].y = niveau.tailleCase*j + niveau.y;
         }
     }
 }
@@ -1050,6 +1065,26 @@ update = function(d)
 	                clic.x = -1;
 	                clic.y = -1;
 	            }
+                else if(niveau.grille[niveau.caseADeplacer.x][niveau.caseADeplacer.y].couleur > 5 && niveau.grille[caseCliquee(clic).x][caseCliquee(clic).y].couleur > 5)
+                {
+                    for(i = 0; i < niveau.tailleX; i++)
+                    {
+                        grilleDeDestruction[i][niveau.caseADeplacer.y] = true;
+                    }
+
+                    for(i = 0; i < niveau.tailleX; i++)
+                    {
+                        grilleDeDestruction[niveau.caseADeplacer.x][i] = true;
+                    }
+
+                    tempsPrec = Date.now();
+                    enCours = true;
+                    // Pour ne pas qu'il y ait de cases cliquee apres un coup reussi
+                    niveau.caseADeplacer.x = -1;
+                    niveau.caseADeplacer.y = -1;
+                    clic.x = -1;
+                    clic.y = -1;
+                }
 	            else if(estValide(niveau.caseADeplacer))
 	            {
 	                cs1 = niveau.caseADeplacer;
