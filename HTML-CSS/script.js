@@ -1169,11 +1169,6 @@ stop = function(idPlayer) {
  */
 render = function()
 {
-    soundWin = document.getElementbyId("soundWin");
-    soundLose = document.getElementbyId("soundLose");
-    var soundWin = "win.";
-    var soundLose = "lose.";
-
     // effacement de l'écran
     context.clearRect(0, 0, context.width, context.height);
 
@@ -1196,12 +1191,26 @@ render = function()
     
         if(niveau.finDuJeu == 1) {
             drawCenterText("Tu as gagné !", niveau.x, niveau.y + (niveau.tailleCase * niveau.tailleY) / 2 + 10, niveau.tailleCase * niveau.tailleX);
-        soundWin.play();
+        
         }
         else {
             drawCenterText("Tu as perdu...", niveau.x, niveau.y + (niveau.tailleCase * niveau.tailleY) / 2 + 10, niveau.tailleCase * niveau.tailleX);
-        soundLose.play();
+        
         }
+    }
+}
+
+gameover = function() {
+    soundWin = document.getElementbyId("soundWin");
+    soundLose = document.getElementbyId("soundLose");
+    var soundWin = "win.ogg";
+    var soundLose = "lose.mp3";
+
+    if(niveau.finDuJeu == 1) {
+        soundWin.play();
+    }
+    else if (niveau.finDuJeu == 2) {
+        soundLose.play();
     }
 }
 
