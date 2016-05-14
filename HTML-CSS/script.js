@@ -178,12 +178,14 @@ echanger = function(case1, case2)
             pos1 = niveau.grille[case1.x][case1.y].x;
             pos2 = niveau.grille[case2.x][case2.y].x;
             enX = true;
+			moveSound();
         }
         else
         {
             pos1 = niveau.grille[case1.x][case1.y].y;
             pos2 = niveau.grille[case2.x][case2.y].y;
             enY = true;
+			moveSound();
         }
 
         var temp = niveau.grille[case1.x][case1.y];
@@ -431,6 +433,9 @@ couleurBonbon = function(caseEnCours)
         // Case combo
         case 16:
             context.drawImage(combo, niveau.x + caseEnCours.x+1, niveau.y + caseEnCours.y+1, niveau.tailleCase-2, niveau.tailleCase-2);
+			var bombe = new Audio("bombe.ogg");
+			bombe.play();
+
             break;
         // Autres
         default:
@@ -1143,26 +1148,6 @@ update = function(d)
         niveau.finDuJeu = 1;
 }
 
-play = function(idPlayer, control) {
-    var player = document.getElementById("audioPlayer");
-    
-    if (player.paused) {
-        player.play();
-        control.textContent = "Pause";
-    } else {
-        player.pause();
-        control.textContent = "Play";
-    }
-}
-
-stop = function(idPlayer) {
-    var player = document.getElementById("audioPlayer");
-
-    player.currentTime = 0;
-    play.pause(); 
-}
-
-
 
 /**
  *  Fonction réalisant le rendu de l'état du jeu
@@ -1200,16 +1185,11 @@ render = function()
     }
 }
 
-gameover = function() {
-    var soundWin = document.getElementbyId("soundWin");
-    var soundLose = document.getElementbyId("soundLose");
-
-    if(niveau.finDuJeu == 1) {
-        soundWin.play();
-    }
-    else if (niveau.finDuJeu == 2) {
-        soundLose.play();
-    }
+var testSound = new Audio();
+moveSound = function() {
+	testSound = document.getElementById("effects");
+	testSound.currentTime = 0;
+	testSound.play();
 }
 
 /**
