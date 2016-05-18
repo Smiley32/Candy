@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="stylesheet" href="style.css" />
+		<script src="script.js"></script>
+		<title>Candy Crush | PiiL</title>
+	</head>
+	
+	<body onload="init()">
+		<header>
+			<img src="images/banniereCandy2.jpg" alt="Candy Crush Banniere" title="By Mohamed&Emile"/>
+		</header>
+		<main> 
+			<nav>
+				<ul>
+					<li><a href="#">JEU</a></li>
+					<li><a href="controles.html">Comment jouer ?</a></li>
+					<li><a href="propos.html">À propos</a></li>
+				</ul>
+			</nav>
+			
+		<h1>JEU</h1>
+		
+		<canvas id="cvs" width="600" height="600" style="margin: 10px auto; border: solid 1px #000;"></canvas>
+		
+		
+		<img id="button" onclick="init()" src="images/newgameCC.png"> 
+	
+		
+		<p class="coups" style="background-image: url('images/score.png'); border: solid 5px purple; border-radius: 15px; height: 180px; text-align: center;">Coups Restants <br>
+		<span id="coups">10</span></p>
+		<p class="score" style="background-image: url('images/score.png'); border: solid 5px purple; border-radius: 15px; height: 180px; text-align: center;">Score<br>
+		<span id="score"></span></p>
+		<div id="progress">
+		    <div id="bar"></div>
+		    <div id="label">0%</div>
+		</div>
+		</main>
+		<footer>Codé par Mohamed <span class="smallcaps">Lakhal</span> et &Eacutemile <span class="smallcaps">Jeannin</span></footer>
+	</body>
+</html>
